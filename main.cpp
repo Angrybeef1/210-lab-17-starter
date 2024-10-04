@@ -8,11 +8,18 @@ struct Node {
     Node *next;
 };
 
-void output(Node *);
+//node functions
+
+void output (Node *head);
+Node* addToFront (Node *head, float value);
+Node* addToTail (Node *head, float value);
+Node* deleteNode (Node *head, int position);
+Node* insertNode (Node *head, int position, float balue);
+void deleteList (Node *&head);
+int getListSize (Node *head);
 
 int main() {
     Node *head = nullptr;
-    int count = 0;
 
     // create a linked list of size SIZE with random numbers 0-99
     for (int i = 0; i < SIZE; i++) {
@@ -40,6 +47,9 @@ int main() {
     int entry;
     cout << "Choice --> ";
     cin >> entry;
+    head = deleteNode(head, entry);
+    cout << "after deleting node " << entry << ":" << endl;
+    output (head);
 
     // traverse that many times and delete that node
     current = head;
@@ -60,7 +70,7 @@ int main() {
     output(head);
 
     // insert a node
-    current = head;
+    //current = head;
     cout << "After which node to insert 10000? " << endl;
     count = 1;
     while (current) {
@@ -99,16 +109,92 @@ int main() {
     return 0;
 }
 
-void output(Node * hd) {
-    if (!hd) {
+Node* addToFront (Node *Head, float value){
+    Node *newNode = new Node {value, head};
+    if (!head){
+        return newNode;
+    }
+
+Node* addToTail(Node *head, float value) {
+    Node *newNode = new Node{value, nullptr};
+    if (!head) {
+        return newNode;
+    }
+    Node *current = head;
+    while (current->next) {
+        current = current->next;
+    }
+    current->next = newNode;
+    return head;
+}
+
+Node* deleteNode(Node *head, int position) {
+    if (!head) return nullptr;
+    if (position == 1) {
+        Node *temp = head;
+        head = head->next;
+        delete temp;
+        return head;
+    }
+    Node *current = head;
+    Node *prev = nullptr;
+    for (int i = 1; i < position && current; i++) {
+        prev = current;
+        current = current->next;
+    }
+    if (current) {
+        prev->next = current->next;
+        delete current;
+    }
+    return head;
+}
+
+Node* insertNode(Node *head, int position, float value) {
+    if (position <= 0 || !head) {
+        return addToFront(head, value);
+    }
+    Node *newNode = new Node{value, nullptr};
+    Node *current = head;
+    for (int i = 1; i < position && current->next; i++) {
+        current = current->next;
+    }
+    newNode->next = current->next;
+    current->next = newNode;
+    return head;
+}
+
+void deleteList(Node *&head) {
+    while (head) {
+        Node *temp = head;
+        head = head->next;
+        delete temp;
+    }
+}
+
+int getListSize(Node *head) {
+    int size = 0;
+    Node *current = head;
+    while (current) {
+        size++;
+        current = current->next;
+    }
+    return size;
+}
+
+void output(Node *head) {
+    if (!head) {
         cout << "Empty list.\n";
         return;
     }
     int count = 1;
-    Node * current = hd;
+    Node *current = head;
     while (current) {
         cout << "[" << count++ << "] " << current->value << endl;
         current = current->next;
     }
     cout << endl;
+}
+
+
+
 }
